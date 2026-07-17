@@ -1,6 +1,6 @@
 # Web Enumeration & Exploitation Reference
 
-Practical reference for web-focused recon and common vulnerability classes — subdomain/content discovery through to manual injection testing.
+Practical reference for web-focused recon and common vulnerability classes: subdomain/content discovery through to manual injection testing.
 
 ## Table of Contents
 
@@ -33,7 +33,7 @@ nikto -h http://target.com                              # quick known-vuln/misco
 whatweb http://target.com                                # technology fingerprinting
 ```
 
-`ffuf` is generally faster and more flexible (JSON output, easy filtering by response size/code) — `gobuster` is the more common default in walkthroughs but either does the same core job.
+`ffuf` is generally faster and more flexible (JSON output, easy filtering by response size/code). `gobuster` is the more common default in walkthroughs, but either does the same core job.
 
 ## 3. SQL Injection
 
@@ -63,7 +63,7 @@ sqlmap -r request.txt --dbs        # feed it a raw captured HTTP request instead
 <svg onload=alert('XSS')>
 ```
 
-Try all three — filters that block `<script>` tags often miss event-handler-based payloads like `onerror`/`onload`.
+Try all three: filters that block `<script>` tags often miss event-handler-based payloads like `onerror`/`onload`.
 
 ## 5. Command Injection
 
@@ -75,7 +75,7 @@ Try all three — filters that block `<script>` tags often miss event-handler-ba
 $(whoami)
 ```
 
-Try each separator — which one works depends on the underlying shell and how the vulnerable code concatenates input.
+Try each separator: which one works depends on the underlying shell and how the vulnerable code concatenates input.
 
 ## 6. File Upload Bypasses
 
@@ -98,7 +98,7 @@ shell.jpg.php
 <root>&xxe;</root>
 ```
 
-IDOR is simpler to test than to automate — just increment/change an ID and see what comes back:
+IDOR is simpler to test than to automate, just increment/change an ID and see what comes back:
 
 ```
 /profile?id=123  →  /profile?id=124
@@ -106,6 +106,6 @@ IDOR is simpler to test than to automate — just increment/change an ID and see
 
 ## 8. Field Notes
 
-**Screenshot everything before you dig in.** Running `gowitness` (or similar) against every live host found during subdomain discovery turns a wall of URLs into a fast visual triage pass — obviously-interesting targets (login portals, admin panels, unusual apps) jump out immediately instead of requiring you to open each one manually.
+**Screenshot everything before you dig in.** Running `gowitness` (or similar) against every live host found during subdomain discovery turns a wall of URLs into a fast visual triage pass. Obviously-interesting targets (login portals, admin panels, unusual apps) jump out immediately instead of requiring you to open each one manually.
 
-**Manual SQLi probes first, `sqlmap` second.** A quick `' OR 1=1--` confirms the injection point exists and gives you a feel for the query structure before handing it to `sqlmap` — running `sqlmap` blind against every parameter is slow and noisy, and you'll have a much better sense of what to expect from it if you've already confirmed injection manually.
+**Manual SQLi probes first, `sqlmap` second.** A quick `' OR 1=1--` confirms the injection point exists and gives you a feel for the query structure before handing it to `sqlmap`. Running `sqlmap` blind against every parameter is slow and noisy, and you'll have a much better sense of what to expect from it if you've already confirmed injection manually.

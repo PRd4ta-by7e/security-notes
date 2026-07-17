@@ -1,6 +1,6 @@
 # Suricata Reference
 
-Practical reference for Suricata as a network IDS/IPS — running modes, rule syntax, and log analysis.
+Practical reference for Suricata as a network IDS/IPS: running modes, rule syntax, and log analysis.
 
 ## Table of Contents
 
@@ -17,10 +17,10 @@ Practical reference for Suricata as a network IDS/IPS — running modes, rule sy
 
 | Term | Meaning |
 |---|---|
-| **IDS mode** | Passive — inspects traffic and alerts, does not block |
-| **IPS mode** | Active — inline, can drop/reject matching traffic |
+| **IDS mode** | Passive, inspects traffic and alerts, does not block |
+| **IPS mode** | Active, inline, can drop/reject matching traffic |
 | **Rule** | A signature defining what traffic pattern triggers an alert/action |
-| **eve.json** | Suricata's structured JSON event log — the primary output for analysis and SIEM ingestion |
+| **eve.json** | Suricata's structured JSON event log, the primary output for analysis and SIEM ingestion |
 | **Ruleset** | A collection of rules, usually from a maintained source (ET Open, Suricata's own, custom) |
 
 ## 2. Running Modes
@@ -31,7 +31,7 @@ suricata -c /etc/suricata/suricata.yaml -r capture.pcap # offline analysis of a 
 suricata -T -c /etc/suricata/suricata.yaml              # test config validity without running
 ```
 
-IPS (inline) mode requires NFQUEUE or AF_PACKET inline configuration — a deliberate deployment choice, not the default.
+IPS (inline) mode requires NFQUEUE or AF_PACKET inline configuration, a deliberate deployment choice, not the default.
 
 ## 3. Rule Syntax
 
@@ -42,19 +42,19 @@ alert tcp any any -> $HOME_NET 22 (msg:"Possible SSH brute force"; flow:to_serve
 ```
 
 Breakdown:
-- `alert` — action (`alert`, `drop`, `reject`, `pass`)
-- `tcp any any -> $HOME_NET 22` — protocol, source IP/port → destination IP/port
-- `msg:"..."` — human-readable alert description
-- `flow:to_server` — directionality constraint
-- `threshold:...` — rate-based condition (e.g. 5 hits in 60s = likely brute force, not one-off)
-- `sid:` — unique rule ID (custom rules should use IDs outside the range reserved for public rulesets, typically 1000000+)
-- `rev:` — rule revision number
+- `alert`: action (`alert`, `drop`, `reject`, `pass`)
+- `tcp any any -> $HOME_NET 22`: protocol, source IP/port → destination IP/port
+- `msg:"..."`: human-readable alert description
+- `flow:to_server`: directionality constraint
+- `threshold:...`: rate-based condition (e.g. 5 hits in 60s = likely brute force, not one-off)
+- `sid:`: unique rule ID (custom rules should use IDs outside the range reserved for public rulesets, typically 1000000+)
+- `rev:`: rule revision number
 
 Common keywords worth knowing: `content:"..."` (payload match), `pcre:"..."` (regex match), `dsize:` (packet size), `flags:` (TCP flags), `classtype:` (alert category).
 
 ## 4. Log Output (eve.json)
 
-Suricata's `eve.json` is the primary structured log — every alert, flow, DNS query, TLS handshake, and HTTP transaction becomes a JSON event. Filtering it with `jq` is the fastest way to triage without a full SIEM in front of it:
+Suricata's `eve.json` is the primary structured log: every alert, flow, DNS query, TLS handshake, and HTTP transaction becomes a JSON event. Filtering it with `jq` is the fastest way to triage without a full SIEM in front of it:
 
 ```
 # All alerts, most recent last
@@ -83,5 +83,5 @@ Typical triage pass on a capture or live segment:
 1. Validate config: `suricata -T -c suricata.yaml`
 2. Run against target traffic (live interface or pcap)
 3. Tail `eve.json` for alerts as they land, or batch-analyze after a pcap run
-4. Pivot from a `sid` of interest back into the matching rule to understand exactly what triggered it — don't treat an alert message as self-explanatory without checking the rule logic behind it
-5. Cross-reference `flow` and `http`/`dns`/`tls` events around the alert timestamp for context — an isolated alert rarely tells the whole story on its own
+4. Pivot from a `sid` of interest back into the matching rule to understand exactly what triggered it. Don't treat an alert message as self-explanatory without checking the rule logic behind it
+5. Cross-reference `flow` and `http`/`dns`/`tls` events around the alert timestamp for context. An isolated alert rarely tells the whole story on its own

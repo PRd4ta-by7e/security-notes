@@ -41,21 +41,21 @@ nmap -Pn 10.10.10.10            # skip host discovery, treat as up (needed when 
 | `closed` | Port reachable, no application listening |
 | `filtered` | Firewall/filter is blocking, Nmap can't tell open vs closed |
 | `unfiltered` | Reachable but state undetermined (ACK scan result) |
-| `open\|filtered` | No response — could be either (common with UDP) |
+| `open\|filtered` | No response, could be either (common with UDP) |
 | `closed\|filtered` | Can't determine between closed and filtered |
 
 ## 3. Scan Types
 
 ```
-nmap -sS target      # SYN scan (default w/ root) — stealthier, doesn't complete handshake
-nmap -sT target      # TCP connect scan — full handshake, no root needed, noisier
-nmap -sU target      # UDP scan — slow, often needs -sV to confirm real state
-nmap -sA target      # ACK scan — maps firewall rules, not port state
-nmap -sW target      # Window scan — variant of ACK using TCP window field
-nmap -sM target      # Maimon scan — FIN/ACK probe, evades some stateless filters
-nmap -sN target      # Null scan — no flags set
+nmap -sS target      # SYN scan (default w/ root), stealthier, doesn't complete handshake
+nmap -sT target      # TCP connect scan, full handshake, no root needed, noisier
+nmap -sU target      # UDP scan, slow, often needs -sV to confirm real state
+nmap -sA target      # ACK scan, maps firewall rules, not port state
+nmap -sW target      # Window scan, variant of ACK using TCP window field
+nmap -sM target      # Maimon scan, FIN/ACK probe, evades some stateless filters
+nmap -sN target      # Null scan, no flags set
 nmap -sF target      # FIN scan
-nmap -sX target      # Xmas scan — FIN, PSH, URG flags set
+nmap -sX target      # Xmas scan, FIN, PSH, URG flags set
 ```
 
 Null/FIN/Xmas rely on RFC 793 behavior and generally only work reliably against non-Windows stacks.
@@ -68,7 +68,7 @@ nmap -p 1-1000 target              # range
 nmap -p- target                    # all 65535 ports
 nmap -p U:53,161,T:21-25,80 target # mixed UDP/TCP
 nmap --top-ports 100 target        # top N most common ports
-nmap -F target                     # fast mode — top 100 ports only
+nmap -F target                     # fast mode, top 100 ports only
 ```
 
 ## 5. Service & Version Detection
@@ -103,48 +103,48 @@ Common categories: `auth`, `broadcast`, `default`, `discovery`, `dos`, `exploit`
 ## 8. Timing & Performance
 
 ```
-nmap -T0 target   # paranoid — very slow, IDS evasion
+nmap -T0 target   # paranoid, very slow, IDS evasion
 nmap -T1 target   # sneaky
 nmap -T2 target   # polite
 nmap -T3 target   # normal (default)
-nmap -T4 target   # aggressive — most common for lab/CTF use
-nmap -T5 target   # insane — fastest, sacrifices accuracy
+nmap -T4 target   # aggressive, most common for lab/CTF use
+nmap -T5 target   # insane, fastest, sacrifices accuracy
 ```
 
-Custom control beyond the T0–T5 presets — useful when a preset is close but not quite right:
+Custom control beyond the T0-T5 presets, useful when a preset is close but not quite right:
 
 ```
-nmap --max-rate 10 target          # cap packets/sec sent — throttle below IDS/rate-limit thresholds
-nmap --min-rate 100 target         # floor packets/sec — force faster sending when accuracy matters less
+nmap --max-rate 10 target          # cap packets/sec sent, throttle below IDS/rate-limit thresholds
+nmap --min-rate 100 target         # floor packets/sec, force faster sending when accuracy matters less
 nmap --scan-delay 1s target        # fixed delay between probes to a single host
 nmap --max-scan-delay 10ms target  # cap adaptive delay so it doesn't grow too slow
 ```
 
-`--max-rate` is the practical go-to for staying under a firewall/IDS's connection-rate alerting threshold — most detection rules trigger on *how many* ports get touched *how fast*, not on that a scan happened at all. Slower and quieter beats a preset timing template if the target is actively monitored.
+`--max-rate` is the practical go-to for staying under a firewall/IDS's connection-rate alerting threshold. Most detection rules trigger on *how many* ports get touched *how fast*, not on that a scan happened at all. Slower and quieter beats a preset timing template if the target is actively monitored.
 
 ## 9. Firewall / IDS Evasion
 
 ```
 nmap -f target                     # fragment packets
 nmap -mtu 24 target                # custom fragment size (multiple of 8)
-nmap -D RND:10 target              # decoy scan — 10 random decoy IPs
+nmap -D RND:10 target              # decoy scan, 10 random decoy IPs
 nmap -D decoy1,decoy2,ME target    # decoy scan with explicit IPs, ME = your real position
-nmap -sI zombie_host target        # idle/zombie scan — scan via a third host, fully blind
+nmap -sI zombie_host target        # idle/zombie scan, scan via a third host, fully blind
 nmap --source-port 53 target       # spoof source port (bypass port-based filter rules)
 nmap --spoof-mac 0 target          # random MAC spoof (local network only)
 nmap --data-length 25 target       # pad packets to avoid signature-based length matching
 nmap --max-rate 10 -T2 target      # combine rate cap + slow timing template for a genuinely quiet scan
 ```
 
-Idle scan requires a zombie host with sequential/predictable IPID and no traffic of its own — increasingly rare on modern networks but useful conceptually for understanding blind scanning.
+Idle scan requires a zombie host with sequential/predictable IPID and no traffic of its own. Increasingly rare on modern networks, but useful conceptually for understanding blind scanning.
 
-Realistic evasion is rarely one flag — it's usually `--max-rate` (or a slow `-T` template) stacked with fragmentation and/or decoys, tuned to whatever the target's detection is actually keying on.
+Realistic evasion is rarely one flag. It's usually `--max-rate` (or a slow `-T` template) stacked with fragmentation and/or decoys, tuned to whatever the target's detection is actually keying on.
 
 ## 10. Output Formats
 
 ```
 nmap -oN scan.txt target        # normal output
-nmap -oX scan.xml target        # XML — parseable, feeds into other tools
+nmap -oX scan.xml target        # XML, parseable, feeds into other tools
 nmap -oG scan.gnmap target      # grepable
 nmap -oA scan_basename target   # all three formats at once
 ```
@@ -161,26 +161,26 @@ nmap -p- -T4 target
 # Full detail pass once ports are known
 nmap -sC -sV -O -p<ports> target -oA full_scan
 
-# UDP top ports (UDP is slow — narrow scope)
+# UDP top ports (UDP is slow, narrow scope)
 nmap -sU --top-ports 50 -T4 target
 
 # Quick vuln check pass
 nmap -sV --script=vuln target
 ```
 
-Typical workflow: fast discovery sweep → full port range to find everything open → targeted `-sC -sV` detail pass on discovered ports → NSE vuln/enum scripts on interesting services.
+Typical workflow: fast discovery sweep, then full port range to find everything open, then a targeted `-sC -sV` detail pass on discovered ports, then NSE vuln/enum scripts on interesting services.
 
 ## 12. Field Notes
 
 Practical lessons from actual enumeration work, not just syntax.
 
-**SMB share enumeration — blank paths.** `smb-enum-shares` and `enum4linux` often return a blank share path when hitting Samba on Linux targets. The reliable fallback is:
+**SMB share enumeration: blank paths.** `smb-enum-shares` and `enum4linux` often return a blank share path when hitting Samba on Linux targets. The reliable fallback is:
 
 ```
 rpcclient -U "" -N target
 netshareenumall
 ```
 
-This returns paths in Windows notation (e.g. `C:\home\user\`) even against a Linux Samba box. Translate literally: drop the `C:`, flip `\` to `/`, drop the trailing slash. The `path:` value returned is already the *full* directory — don't append the share name on top of it, that produces a wrong path.
+This returns paths in Windows notation (e.g. `C:\home\user\`) even against a Linux Samba box. Translate literally: drop the `C:`, flip `\` to `/`, drop the trailing slash. The `path:` value returned is already the *full* directory. Don't append the share name on top of it, that produces a wrong path.
 
-**General reminder:** when a standard enumeration script comes back empty or malformed, don't assume the service is misconfigured — try a lower-level tool (`rpcclient`, raw `nc`, manual protocol interaction) before moving on. Automated scripts fail silently more often than they error loudly.
+**General reminder:** when a standard enumeration script comes back empty or malformed, don't assume the service is misconfigured. Try a lower-level tool (`rpcclient`, raw `nc`, manual protocol interaction) before moving on. Automated scripts fail silently more often than they error loudly.

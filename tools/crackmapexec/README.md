@@ -1,6 +1,6 @@
 # CrackMapExec / NetExec Reference
 
-Practical reference for CrackMapExec (and its actively maintained fork, NetExec) — SMB/AD enumeration, credential validation, and lateral movement.
+Practical reference for CrackMapExec (and its actively maintained fork, NetExec): SMB/AD enumeration, credential validation, and lateral movement.
 
 > CrackMapExec's original project is unmaintained; **NetExec (`nxc`)** is the community-maintained continuation with the same core syntax. Commands below work with either binary (`crackmapexec` / `cme` or `nxc`) unless noted.
 
@@ -17,7 +17,7 @@ Practical reference for CrackMapExec (and its actively maintained fork, NetExec)
 
 ## 1. Core Concept
 
-Point it at a single host or a whole subnet with a credential (password or hash), and it tells you fast whether that credential is valid anywhere — and if it grants local admin. That single signal (`Pwn3d!`) is the fastest way to find a foothold once you have even one working credential.
+Point it at a single host or a whole subnet with a credential (password or hash), and it tells you fast whether that credential is valid anywhere, and if it grants local admin. That single signal (`Pwn3d!`) is the fastest way to find a foothold once you have even one working credential.
 
 ## 2. Credential Validation
 
@@ -25,14 +25,14 @@ Point it at a single host or a whole subnet with a credential (password or hash)
 # Password spray across a subnet
 crackmapexec smb 10.10.10.0/24 -u jsmith -d corp.local -p 'Password123'
 
-# Pass the hash — no cleartext password needed
+# Pass the hash, no cleartext password needed
 crackmapexec smb 10.10.10.0/24 -u administrator -H :ntlmhash
 
 # Local account instead of domain account
 crackmapexec smb 10.10.10.0/24 -u administrator -H :ntlmhash --local-auth
 ```
 
-A `(Pwn3d!)` result means that credential has local admin rights on that host — the strongest possible signal to chase further.
+A `(Pwn3d!)` result means that credential has local admin rights on that host: the strongest possible signal to chase further.
 
 ## 3. Enumeration Flags
 
@@ -49,7 +49,7 @@ crackmapexec smb -L                                                    # list al
 crackmapexec smb 10.10.10.10 -u admin -H hash --local-auth -M lsassy   # dump LSASS memory secrets remotely
 ```
 
-`lsassy` is the module worth knowing first — it pulls credentials out of another machine's LSASS memory over the network without needing to touch disk or drop a binary on the target.
+`lsassy` is the module worth knowing first: it pulls credentials out of another machine's LSASS memory over the network without needing to touch disk or drop a binary on the target.
 
 ## 5. The Local Database (cmedb)
 
@@ -64,6 +64,6 @@ cmedb
 
 ## 6. Field Notes
 
-**Spray broadly before you dig deep on one host.** The highest-value move with a freshly cracked or captured credential is testing it against the *entire* subnet before doing anything else with it — a credential that's a dead end on one machine is often live (and locally admin) on several others. `crackmapexec smb <subnet>/24 -u ... -p ...` across the whole range takes seconds and tells you exactly where to focus next, rather than guessing.
+**Spray broadly before you dig deep on one host.** The highest-value move with a freshly cracked or captured credential is testing it against the *entire* subnet before doing anything else with it. A credential that's a dead end on one machine is often live (and locally admin) on several others. `crackmapexec smb <subnet>/24 -u ... -p ...` across the whole range takes seconds and tells you exactly where to focus next, rather than guessing.
 
-**`--local-auth` matters more than it looks.** Forgetting it when testing a *local* account (vs. a domain account) against multiple hosts will fail silently in confusing ways — the tool tries to auth against the domain instead of locally on each box. If a credential you're sure is valid keeps failing across a subnet, check whether it's a local account first.
+**`--local-auth` matters more than it looks.** Forgetting it when testing a *local* account (vs. a domain account) against multiple hosts will fail silently in confusing ways: the tool tries to auth against the domain instead of locally on each box. If a credential you're sure is valid keeps failing across a subnet, check whether it's a local account first.
