@@ -7,5 +7,9 @@ Reference guides for individual tools — practical usage, not just a copy of th
 | [`nmap/`](./nmap) | Network scanning & enumeration |
 | [`splunk/`](./splunk) | SIEM search, log ingestion, SOC-analyst workflow |
 | [`suricata/`](./suricata) | Network IDS/IPS, rule writing, alert triage |
+| [`responder/`](./responder) | LLMNR/NBT-NS poisoning, credential capture |
+| [`crackmapexec/`](./crackmapexec) | SMB/AD enumeration, credential spraying, lateral movement |
+| [`impacket/`](./impacket) | Remote execution, credential dumping, Kerberoasting, Evil-WinRM |
+| [`bloodhound-mimikatz/`](./bloodhound-mimikatz) | AD attack-path mapping, in-memory credential extraction |
 
-More tools get added here as they come up in practice (e.g. Wireshark, Burp Suite, Metasploit, BloodHound).
+More tools get added here as they come up in practice (e.g. Wireshark, Burp Suite, Metasploit).

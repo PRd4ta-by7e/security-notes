@@ -6,7 +6,7 @@ This is a living repo. Content gets added as I work through labs, courses, and h
 
 ## Contents
 
-- [`tools/`](./tools) — practical reference guides per tool: `nmap` (scanning/enumeration), `splunk` (SIEM search & SOC workflow), `suricata` (IDS/IPS & alert triage)
+- [`tools/`](./tools) — practical reference guides per tool: network scanning (`nmap`), SIEM/SOC workflow (`splunk`), IDS/IPS (`suricata`), and AD/network penetration testing (`responder`, `crackmapexec`, `impacket`, `bloodhound-mimikatz`)
 - More tools and lab writeups get added as I work through them
 
 ## Why this exists
